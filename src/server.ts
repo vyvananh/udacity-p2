@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
-
+const path = require('path');
 (async () => {
 
   // Init the Express application
@@ -33,8 +33,9 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   app.get('/filteredimage',
     async (req, res) => {
-      console.log(req.query);
-      res.send(req.query.image_url)
+      const imagePath = req.query.image_url;
+      const image = await filterImageFromURL(imagePath);
+      res.sendFile(image);
 });
 
 
