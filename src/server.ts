@@ -1,4 +1,5 @@
 import express from 'express';
+import {Application, Request, Response, NextFunction, Errback} from "express";
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 const path = require('path');
@@ -31,12 +32,14 @@ const path = require('path');
 
   //! END @TODO1
 
-  app.get('/filteredimage',
-    async (req, res) => {
-      const imagePath = req.query.image_url;
-      const image = await filterImageFromURL(imagePath);
-      res.sendFile(image);
-});
+  app.get("/filteredimage", async (req: Request, res: Response, next) => {
+    try {
+      let absolutePath: string = await filterImageFromURL(req.query.image_url) as string;
+      return res.status(200).sendFile(absolutePath);
+    } catch (e) {
+        return next(e);
+    }
+  });
 
 
   // Root Endpoint
